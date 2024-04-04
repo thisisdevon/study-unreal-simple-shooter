@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "InputActionValue.h"
 #include "ShooterCharacter.generated.h"
 
 UCLASS()
@@ -18,7 +19,18 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enhanced Input")
+    class UInputMappingContext* InputMapping;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    class UInputAction* InputMoveForward;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    class UInputAction* InputLookUp;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    class UInputAction* InputJump;
 	
+	void MoveForward(const FInputActionValue& Value);
+	void LookUp(const FInputActionValue& Value);
+	void JumpOnTheSpot(const FInputActionValue& Value);
 
 public:	
 	// Called every frame
@@ -26,5 +38,4 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 };
