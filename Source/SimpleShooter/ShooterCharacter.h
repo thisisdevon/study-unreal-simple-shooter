@@ -21,15 +21,20 @@ protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enhanced Input")
     class UInputMappingContext* InputMapping;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enhanced Input")
     class UInputAction* InputMoveForward;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enhanced Input")
     class UInputAction* InputLookUp;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enhanced Input")
+    class UInputAction* InputLookUpRate;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enhanced Input")
     class UInputAction* InputJump;
-	
+	UPROPERTY(EditAnywhere)
+	float RotationRate = 50.f;
+
 	void MoveForward(const FInputActionValue& Value);
 	void LookUp(const FInputActionValue& Value);
+	void LookUpRate(const FInputActionValue& Value);
 	void JumpOnTheSpot(const FInputActionValue& Value);
 
 public:	

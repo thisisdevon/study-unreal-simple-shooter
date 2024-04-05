@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
+#include "ShooterCharacter.h"
 #include "InputAction.h"
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
-#include "ShooterCharacter.h"
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -42,13 +42,14 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 	PEI->BindAction(InputMoveForward, ETriggerEvent::Triggered, this, &AShooterCharacter::MoveForward);
 	PEI->BindAction(InputLookUp, ETriggerEvent::Triggered, this, &AShooterCharacter::LookUp);
+	PEI->BindAction(InputLookUpRate, ETriggerEvent::Triggered, this, &AShooterCharacter::LookUpRate);
 	PEI->BindAction(InputJump, ETriggerEvent::Triggered, this, &AShooterCharacter::JumpOnTheSpot);
 }
 
 void AShooterCharacter::MoveForward(const FInputActionValue& Value)
 {
 	const FVector2D MoveValue = Value.Get<FVector2D>();
-
+	UE_LOG(LogTemp, Display, TEXT("MoveValue (%f,%f)"), MoveValue.X, MoveValue.Y);
 	// Forward/Backward direction
 	if (MoveValue.Y != 0.f)
 	{
@@ -74,6 +75,22 @@ void AShooterCharacter::LookUp(const FInputActionValue &Value)
 	if (MoveValue.X != 0.f)
 	{
 		AddControllerYawInput(-MoveValue.X);
+	}
+}
+
+void AShooterCharacter::LookUpRate(const FInputActionValue &Value)
+{
+	const FVector2D MoveValue = Value.Get<FVector2D>();
+	
+	// Forward/Backward direction
+	if (MoveValue.Y != 0.f)
+	{
+		AddControllerPitchInput(MoveValue.Y * RotationRate);
+	}
+	// Right/Left direction
+	if (MoveValue.X != 0.f)
+	{
+		AddControllerYawInput(MoveValue.X * RotationRate);
 	}
 }
 
