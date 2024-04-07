@@ -33,4 +33,8 @@ private:
 	class USkeletalMeshComponent*  GunMesh;
 	UPROPERTY(EditAnywhere)
 	class UParticleSystem*  MuzzleFlashParticle;
+	UPROPERTY(EditAnywhere)
+	class UParticleSystem*  HitParticle;
+	UPROPERTY(EditAnywhere)
+	float MaxRange = 1000.f;
 };

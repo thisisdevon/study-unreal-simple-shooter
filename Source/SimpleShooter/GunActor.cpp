@@ -2,6 +2,7 @@
 
 
 #include "GunActor.h"
+#include "DrawDebugHelpers.h"
 #include "Kismet\GameplayStatics.h"
 #include "Components/SkeletalMeshComponent.h"
 
@@ -21,6 +22,38 @@ AGunActor::AGunActor()
 void AGunActor::PullTrigger()
 {
 	UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticle, GunMesh, "MuzzleFlashSocket");
+
+	APawn* OwnerPawn = Cast<APawn>(GetOwner());
+
+	if (OwnerPawn == nullptr)
+	{
+		return;
+	}
+
+	AController* OwnerController = OwnerPawn->GetController();
+
+	if (OwnerController == nullptr)
+	{
+		return;
+	}
+
+	FVector Location;
+	FRotator Rotation;
+	OwnerController->GetPlayerViewPoint(Location, Rotation);
+
+	FVector EndLocation = Location + Rotation.Vector() * MaxRange;
+	FHitResult OutResult;
+	if (GetWorld()->LineTraceSingleByChannel
+	(
+		OutResult,
+		Location,
+		EndLocation, 
+		ECollisionChannel::ECC_GameTraceChannel1
+	))
+	{
+		FVector ShotDirection = -Rotation.Vector();
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticle, OutResult.Location, ShotDirection.Rotation());
+	}
 }
 
 // Called when the game starts or when spawned
