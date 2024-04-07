@@ -48,12 +48,12 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PEI->BindAction(InputLookUp, ETriggerEvent::Triggered, this, &AShooterCharacter::LookUp);
 	PEI->BindAction(InputLookUpRate, ETriggerEvent::Triggered, this, &AShooterCharacter::LookUpRate);
 	PEI->BindAction(InputJump, ETriggerEvent::Triggered, this, &AShooterCharacter::JumpOnTheSpot);
+	PEI->BindAction(InputShootGun, ETriggerEvent::Triggered, this, &AShooterCharacter::ShootGun);
 }
 
 void AShooterCharacter::MoveForward(const FInputActionValue& Value)
 {
 	const FVector2D MoveValue = Value.Get<FVector2D>();
-	UE_LOG(LogTemp, Display, TEXT("MoveValue (%f,%f)"), MoveValue.X, MoveValue.Y);
 	// Forward/Backward direction
 	if (MoveValue.Y != 0.f)
 	{
@@ -101,4 +101,9 @@ void AShooterCharacter::LookUpRate(const FInputActionValue &Value)
 void AShooterCharacter::JumpOnTheSpot(const FInputActionValue &Value)
 {
 	Jump();
+}
+
+void AShooterCharacter::ShootGun(const FInputActionValue& Value)
+{
+	Gun->PullTrigger();
 }
