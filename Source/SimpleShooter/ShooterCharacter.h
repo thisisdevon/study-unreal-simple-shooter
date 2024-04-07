@@ -43,4 +43,11 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+private:
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AGunActor> GunClass;
+
+	UPROPERTY()
+	AGunActor* Gun;
 };
