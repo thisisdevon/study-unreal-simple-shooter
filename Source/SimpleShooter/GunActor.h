@@ -37,4 +37,6 @@ private:
 	class UParticleSystem*  HitParticle;
 	UPROPERTY(EditAnywhere)
 	float MaxRange = 1000.f;
+	UPROPERTY(EditAnywhere)
+	float DamageOnHit = 10.f;
 };

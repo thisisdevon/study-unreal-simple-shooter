@@ -3,7 +3,8 @@
 
 #include "GunActor.h"
 #include "DrawDebugHelpers.h"
-#include "Kismet\GameplayStatics.h"
+#include "Engine/DamageEvents.h"
+#include "Kismet/GameplayStatics.h"
 #include "Components/SkeletalMeshComponent.h"
 
 // Sets default values
@@ -53,6 +54,14 @@ void AGunActor::PullTrigger()
 	{
 		FVector ShotDirection = -Rotation.Vector();
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticle, OutResult.Location, ShotDirection.Rotation());
+		
+		AActor* HitActor = OutResult.GetActor();
+		if (HitActor != nullptr)
+		{
+
+			FPointDamageEvent DamageEvent(DamageOnHit, OutResult, ShotDirection, nullptr);
+			HitActor->TakeDamage(DamageOnHit, DamageEvent, OwnerController, this);
+		}
 	}
 }
 
