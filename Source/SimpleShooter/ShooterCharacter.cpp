@@ -13,6 +13,7 @@ AShooterCharacter::AShooterCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	Health = MaxHealth;
 
 }
 
@@ -25,6 +26,11 @@ void AShooterCharacter::BeginPlay()
 	GetMesh()->HideBoneByName(TEXT("weapon_r"), EPhysBodyOp::PBO_None);
 	Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "WeaponSocket");
 	Gun->SetOwner(this);
+}
+
+bool AShooterCharacter::IsDead() const
+{
+    return Health <= 0.f;
 }
 
 // Called every frame
