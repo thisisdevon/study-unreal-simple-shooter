@@ -2,11 +2,32 @@
 
 
 #include "ShooterAIController.h"
+#include "Navigation/PathFollowingComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 void AShooterAIController::BeginPlay()
 {
     Super::BeginPlay();
     APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-    SetFocus(PlayerPawn, EAIFocusPriority::Gameplay);
+    
+}
+
+void AShooterAIController::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+    APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+    
+    if (LineOfSightTo(PlayerPawn))
+    {
+        if (GetMoveStatus() != EPathFollowingStatus::Moving)
+        {
+            MoveToActor(PlayerPawn, AcceptanceByRadius, true);
+        }
+        SetFocus(PlayerPawn, EAIFocusPriority::Gameplay);
+    }
+    else
+    {
+        ClearFocus(EAIFocusPriority::Gameplay);
+        StopMovement();
+    }
 }
