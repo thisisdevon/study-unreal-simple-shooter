@@ -23,19 +23,19 @@ void AShooterAIController::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
-    //APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+    APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
     
-    // if (LineOfSightTo(PlayerPawn))
-    // {
-    //     if (GetMoveStatus() != EPathFollowingStatus::Moving)
-    //     {
-    //         MoveToActor(PlayerPawn, AcceptanceByRadius, true);
-    //     }
-    //     SetFocus(PlayerPawn, EAIFocusPriority::Gameplay);
-    // }
-    // else
-    // {
-    //     ClearFocus(EAIFocusPriority::Gameplay);
-    //     StopMovement();
-    // }
+    if (AIBehavior != nullptr)
+    {
+        if (LineOfSightTo(PlayerPawn))
+        {
+            FVector PlayerLocation = PlayerPawn->GetActorLocation();
+            GetBlackboardComponent()->SetValueAsVector("PlayerLocation", PlayerLocation);
+            GetBlackboardComponent()->SetValueAsVector("LastKnownPlayerLocation", PlayerLocation);
+        }
+        else
+        {
+            GetBlackboardComponent()->ClearValue("PlayerLocation");
+        }
+    }
 }
