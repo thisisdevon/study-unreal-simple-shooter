@@ -4,6 +4,7 @@
 #include "ShooterCharacter.h"
 #include "InputAction.h"
 #include "GunActor.h"
+#include "Components/CapsuleComponent.h"
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
@@ -63,6 +64,12 @@ float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const &Dama
 	float DamageApplied = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	Health = FMath::Max(0.f, Health - DamageApplied);
 	UE_LOG(LogTemp, Display, TEXT("Health remaing: %f"), Health);
+
+	if (IsDead())
+	{
+		DetachFromControllerPendingDestroy();
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
     return DamageApplied;
 }
 
