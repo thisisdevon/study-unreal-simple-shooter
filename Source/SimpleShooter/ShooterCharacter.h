@@ -38,7 +38,6 @@ protected:
 	void LookUp(const FInputActionValue& Value);
 	void LookUpRate(const FInputActionValue& Value);
 	void JumpOnTheSpot(const FInputActionValue& Value);
-	void ShootGun(const FInputActionValue& Value);
 
 public:	
 	UFUNCTION(BlueprintPure)
@@ -50,6 +49,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	void ShootGun(const FInputActionValue& Value);
 
 private:
 	UPROPERTY(EditDefaultsOnly)
