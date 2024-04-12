@@ -23,6 +23,7 @@ AGunActor::AGunActor()
 void AGunActor::PullTrigger()
 {
 	UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticle, GunMesh, "MuzzleFlashSocket");
+	UGameplayStatics::SpawnSoundAttached(ShotSound, GunMesh, "MuzzleFlashSocket");
 
 	APawn* OwnerPawn = Cast<APawn>(GetOwner());
 
@@ -38,27 +39,12 @@ void AGunActor::PullTrigger()
 		return;
 	}
 
-	FVector Location;
-	FRotator Rotation;
-	OwnerController->GetPlayerViewPoint(Location, Rotation);
-
-	FVector EndLocation = Location + Rotation.Vector() * MaxRange;
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(this);
-	Params.AddIgnoredActor(GetOwner());
-
 	FHitResult OutResult;
-	if (GetWorld()->LineTraceSingleByChannel
-	(
-		OutResult,
-		Location,
-		EndLocation, 
-		ECollisionChannel::ECC_GameTraceChannel1,
-		Params
-	))
+	FVector ShotDirection;
+	if (GunTrace(OutResult, ShotDirection, OwnerController))
 	{
-		FVector ShotDirection = -Rotation.Vector();
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticle, OutResult.Location, ShotDirection.Rotation());
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactSound, OutResult.Location);
 		
 		AActor* HitActor = OutResult.GetActor();
 		if (HitActor != nullptr)
@@ -84,3 +70,24 @@ void AGunActor::Tick(float DeltaTime)
 
 }
 
+bool AGunActor::GunTrace(FHitResult &HitRef, FVector &ShotDirection, AController *OwnerController)
+{
+	FVector Location;
+	FRotator Rotation;
+	OwnerController->GetPlayerViewPoint(Location, Rotation);
+
+	ShotDirection = -Rotation.Vector();
+
+	FVector EndLocation = Location + Rotation.Vector() * MaxRange;
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+	Params.AddIgnoredActor(GetOwner());
+    return GetWorld()->LineTraceSingleByChannel
+	(
+		HitRef,
+		Location,
+		EndLocation, 
+		ECollisionChannel::ECC_GameTraceChannel1,
+		Params
+	);
+}

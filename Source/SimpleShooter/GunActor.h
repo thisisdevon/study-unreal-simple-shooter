@@ -39,4 +39,10 @@ private:
 	float MaxRange = 1000.f;
 	UPROPERTY(EditAnywhere)
 	float DamageOnHit = 10.f;
+	UPROPERTY(EditAnywhere)
+	class USoundBase* ShotSound;
+	UPROPERTY(EditAnywhere)
+	class USoundBase* ImpactSound;
+
+	bool GunTrace(FHitResult &HitRef, FVector &ShotDirection, class AController* OwnerController);
 };
