@@ -13,6 +13,8 @@ UCLASS()
 class SIMPLESHOOTER_API AShooterAIController : public AAIController
 {
 	GENERATED_BODY()
+public:
+	bool IsCharacterDead() const;
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick( float DeltaSeconds) override;

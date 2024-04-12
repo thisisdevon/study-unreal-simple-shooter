@@ -15,4 +15,7 @@ class SIMPLESHOOTER_API AKillAllEnemyGameModeBase : public ASimpleShooterGameMod
 	GENERATED_BODY()
 public:
 	virtual void PawnKilled(APawn *KilledPawn) override;
+
+private:
+	void EndGame(bool bIsPlayerWinner);
 };
