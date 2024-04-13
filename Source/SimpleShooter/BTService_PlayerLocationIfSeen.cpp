@@ -21,7 +21,8 @@ void UBTService_PlayerLocationIfSeen::TickNode(UBehaviorTreeComponent &OwnerComp
         AAIController* ShooterAIController = OwnerComp.GetAIOwner();
         if (ShooterAIController != nullptr && ShooterAIController->LineOfSightTo(PlayerPawn))
         {
-            OwnerComp.GetBlackboardComponent()->SetValueAsVector(GetSelectedBlackboardKey(), PlayerPawn->GetActorLocation());
+            OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), PlayerPawn);
+        OwnerComp.GetBlackboardComponent()->SetValueAsVector("LastKnownPlayerLocation", PlayerPawn->GetActorLocation());
         }
         else
         {
