@@ -15,6 +15,7 @@ void AShooterPlayerController::GameHasEnded(AActor * EndGameFocus, bool bIsWinne
     }
     else
     {
+        DeathFunction();
         ResultScreen = CreateWidget(this, LoseScreenClass);
     }
     if (ResultScreen != nullptr)
@@ -23,4 +24,22 @@ void AShooterPlayerController::GameHasEnded(AActor * EndGameFocus, bool bIsWinne
     }
     GetWorldTimerManager().SetTimer(RestartTimer, this, &APlayerController::RestartLevel, RestartDelay);
 
+}
+
+void AShooterPlayerController::RemoveHUDScreen()
+{
+    HUDScreen->RemoveFromParent();
+}
+
+void AShooterPlayerController::BeginPlay()
+{
+    Super::BeginPlay();
+    HUDScreen = CreateWidget(this, HUDScreenClass);
+    HUDScreen->AddToViewport();
+}
+
+
+void AShooterPlayerController::DeathFunction()
+{
+    RemoveHUDScreen();
 }
