@@ -29,6 +29,7 @@ void AGunActor::PullTrigger()
 
 	if (OwnerPawn == nullptr)
 	{
+		UE_LOG(LogTemp, Display, TEXT("No owner pawn"));
 		return;
 	}
 
@@ -36,6 +37,7 @@ void AGunActor::PullTrigger()
 
 	if (OwnerController == nullptr)
 	{
+		UE_LOG(LogTemp, Display, TEXT("No owner controller"));
 		return;
 	}
 

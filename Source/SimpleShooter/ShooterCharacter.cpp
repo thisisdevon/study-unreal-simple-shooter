@@ -24,10 +24,29 @@ void AShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	Health = MaxHealth;
-	Gun = GetWorld()->SpawnActor<AGunActor>(GunClass);
 	GetMesh()->HideBoneByName(TEXT("weapon_r"), EPhysBodyOp::PBO_None);
-	Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "WeaponSocket");
-	Gun->SetOwner(this);
+
+	for (int i = 0; i < GunClass.Num(); i++)
+	{
+		AGunActor* SpawnedGun = GetWorld()->SpawnActor<AGunActor>(GunClass[i]);
+		if (i != GunActiveIndex)
+		{
+			SpawnedGun->SetHidden(true);
+		}
+		SpawnedGun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "WeaponSocket");
+		SpawnedGun->SetOwner(this);
+		GunArray.Add(SpawnedGun);
+	}
+}
+
+void AShooterCharacter::SetActiveGun(AGunActor* NewGun) 
+{
+	NewGun->SetHidden(false);
+}
+
+AGunActor* AShooterCharacter::GetActiveGun() 
+{
+	return GunArray[GunActiveIndex];
 }
 
 bool AShooterCharacter::IsDead() const
@@ -63,14 +82,15 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PEI->BindAction(InputLookUpRate, ETriggerEvent::Triggered, this, &AShooterCharacter::LookUpRate);
 	PEI->BindAction(InputJump, ETriggerEvent::Triggered, this, &AShooterCharacter::JumpOnTheSpot);
 	PEI->BindAction(InputShootGun, ETriggerEvent::Triggered, this, &AShooterCharacter::ShootGun);
+	PEI->BindAction(InputSwitchGun, ETriggerEvent::Triggered, this, &AShooterCharacter::SwitchGun);
 }
 
 float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser)
 {
 	float DamageApplied = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	Health = FMath::Max(0.f, Health - DamageApplied);
-	UE_LOG(LogTemp, Display, TEXT("Health remaing: %f"), Health);
 
+	UE_LOG(LogTemp, Display, TEXT("Health remaining: %f"), Health);
 	if (IsDead())
 	{
 		ASimpleShooterGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ASimpleShooterGameModeBase>();
@@ -97,6 +117,20 @@ void AShooterCharacter::MoveForward(const FInputActionValue& Value)
 	{
 		AddMovementInput(GetActorRightVector(), MoveValue.X);
 	}
+}
+
+
+void AShooterCharacter::SwitchGun(const FInputActionValue& Value) 
+{
+	AGunActor* CurrentActiveGun = GetActiveGun();
+	CurrentActiveGun->SetHidden(true);
+	GunActiveIndex++;
+	if (GunActiveIndex >= GunArray.Num())
+	{
+		GunActiveIndex = 0;
+	}
+	SetActiveGun(GetActiveGun());
+	UE_LOG(LogTemp, Display, TEXT("Gun switch : %i"), GunActiveIndex);
 }
 
 void AShooterCharacter::LookUp(const FInputActionValue &Value)
@@ -138,5 +172,5 @@ void AShooterCharacter::JumpOnTheSpot(const FInputActionValue &Value)
 
 void AShooterCharacter::ShootGun(const FInputActionValue& Value)
 {
-	Gun->PullTrigger();
+	GetActiveGun()->PullTrigger();
 }
