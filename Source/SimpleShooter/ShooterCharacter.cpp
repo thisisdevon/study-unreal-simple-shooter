@@ -29,12 +29,15 @@ void AShooterCharacter::BeginPlay()
 	for (int i = 0; i < GunClass.Num(); i++)
 	{
 		AGunActor* SpawnedGun = GetWorld()->SpawnActor<AGunActor>(GunClass[i]);
+		SpawnedGun->SetOwner(this);
 		if (i != GunActiveIndex)
 		{
-			SpawnedGun->SetHidden(true);
+			HideGun(SpawnedGun);
 		}
-		SpawnedGun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "WeaponSocket");
-		SpawnedGun->SetOwner(this);
+		else
+		{
+			SetActiveGun(SpawnedGun);
+		}
 		GunArray.Add(SpawnedGun);
 	}
 }
@@ -42,6 +45,13 @@ void AShooterCharacter::BeginPlay()
 void AShooterCharacter::SetActiveGun(AGunActor* NewGun) 
 {
 	NewGun->SetHidden(false);
+	NewGun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "WeaponSocket");
+}
+
+void AShooterCharacter::HideGun(AGunActor* HiddenGun) 
+{
+	HiddenGun->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+	HiddenGun->SetHidden(true);
 }
 
 AGunActor* AShooterCharacter::GetActiveGun() 
@@ -123,7 +133,7 @@ void AShooterCharacter::MoveForward(const FInputActionValue& Value)
 void AShooterCharacter::SwitchGun(const FInputActionValue& Value) 
 {
 	AGunActor* CurrentActiveGun = GetActiveGun();
-	CurrentActiveGun->SetHidden(true);
+	HideGun(CurrentActiveGun);
 	GunActiveIndex++;
 	if (GunActiveIndex >= GunArray.Num())
 	{

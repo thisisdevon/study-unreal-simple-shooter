@@ -71,4 +71,5 @@ private:
 
 	AGunActor* GetActiveGun();
 	void SetActiveGun(AGunActor* NewGun);
+	void HideGun(AGunActor* NewGun);
 };
