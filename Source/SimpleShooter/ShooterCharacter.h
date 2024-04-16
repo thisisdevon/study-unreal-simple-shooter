@@ -62,5 +62,8 @@ private:
 	TSubclassOf<class AGunActor> GunClass;
 
 	UPROPERTY()
-	AGunActor* Gun;
+	TArray<AGunActor*> GunArray;
+
+	int32 GunActiveIndex = 0;
+	AGunActor* GetActiveGun();
 };

@@ -24,10 +24,11 @@ void AShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	Health = MaxHealth;
-	Gun = GetWorld()->SpawnActor<AGunActor>(GunClass);
+	AGunActor* SpawnedGun = GetWorld()->SpawnActor<AGunActor>(GunClass);
 	GetMesh()->HideBoneByName(TEXT("weapon_r"), EPhysBodyOp::PBO_None);
-	Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "WeaponSocket");
-	Gun->SetOwner(this);
+	SpawnedGun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "WeaponSocket");
+	SpawnedGun->SetOwner(this);
+	GunArray.Add(SpawnedGun);
 }
 
 bool AShooterCharacter::IsDead() const
@@ -138,5 +139,10 @@ void AShooterCharacter::JumpOnTheSpot(const FInputActionValue &Value)
 
 void AShooterCharacter::ShootGun(const FInputActionValue& Value)
 {
-	Gun->PullTrigger();
+	GetActiveGun()->PullTrigger();
+}
+
+AGunActor * AShooterCharacter::GetActiveGun()
+{
+	return GunArray[GunActiveIndex];
 }
