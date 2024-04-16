@@ -74,6 +74,7 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PEI->BindAction(InputLookUpRate, ETriggerEvent::Triggered, this, &AShooterCharacter::LookUpRate);
 	PEI->BindAction(InputJump, ETriggerEvent::Triggered, this, &AShooterCharacter::JumpOnTheSpot);
 	PEI->BindAction(InputShootGun, ETriggerEvent::Triggered, this, &AShooterCharacter::ShootGun);
+	PEI->BindAction(InputSwitchGun, ETriggerEvent::Triggered, this, &AShooterCharacter::SwitchGun);
 }
 
 float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser)
@@ -147,6 +148,17 @@ void AShooterCharacter::JumpOnTheSpot(const FInputActionValue &Value)
 	Jump();
 }
 
+void AShooterCharacter::SwitchGun(const FInputActionValue &Value)
+{
+	HideGun(GunActiveIndex);
+	GunActiveIndex++;
+	if (GunActiveIndex >= GunArray.Num())
+	{
+		GunActiveIndex = 0;
+	}
+	ShowGun(GunActiveIndex);
+}
+
 void AShooterCharacter::ShootGun(const FInputActionValue& Value)
 {
 	GetActiveGun()->PullTrigger();
@@ -165,4 +177,6 @@ void AShooterCharacter::HideGun(int32 HiddenGunIndex)
 void AShooterCharacter::ShowGun(int32 ShownGunIndex)
 {
 	GunArray[ShownGunIndex]->SetActorHiddenInGame(false);
+	GunArray[ShownGunIndex]->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "WeaponSocket");
+	GunArray[ShownGunIndex]->SetOwner(this);
 }

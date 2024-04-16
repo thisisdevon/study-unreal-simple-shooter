@@ -31,6 +31,8 @@ protected:
     class UInputAction* InputJump;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enhanced Input")
     class UInputAction* InputShootGun;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enhanced Input")
+    class UInputAction* InputSwitchGun;
 	UPROPERTY(EditAnywhere)
 	float RotationRate = 50.f;
 
@@ -38,6 +40,7 @@ protected:
 	void LookUp(const FInputActionValue& Value);
 	void LookUpRate(const FInputActionValue& Value);
 	void JumpOnTheSpot(const FInputActionValue& Value);
+	void SwitchGun(const FInputActionValue& Value);
 
 public:	
 	UFUNCTION(BlueprintPure)
