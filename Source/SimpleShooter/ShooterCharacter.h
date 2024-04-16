@@ -59,11 +59,14 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	float Health;
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<class AGunActor> GunClass;
+	TArray<TSubclassOf<class AGunActor>> GunClassArray;
 
 	UPROPERTY()
 	TArray<AGunActor*> GunArray;
 
 	int32 GunActiveIndex = 0;
 	AGunActor* GetActiveGun();
+
+	void HideGun(int32 HiddenGunIndex);
+	void ShowGun(int32 ShownGunIndex);
 };

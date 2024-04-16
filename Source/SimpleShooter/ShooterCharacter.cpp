@@ -24,11 +24,21 @@ void AShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	Health = MaxHealth;
-	AGunActor* SpawnedGun = GetWorld()->SpawnActor<AGunActor>(GunClass);
 	GetMesh()->HideBoneByName(TEXT("weapon_r"), EPhysBodyOp::PBO_None);
-	SpawnedGun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "WeaponSocket");
-	SpawnedGun->SetOwner(this);
-	GunArray.Add(SpawnedGun);
+	for (int i = 0; i < GunClassArray.Num(); i++)
+	{
+		AGunActor* SpawnedGun = GetWorld()->SpawnActor<AGunActor>(GunClassArray[i]);
+		GunArray.Add(SpawnedGun);
+		if (i == GunActiveIndex)
+		{
+			SpawnedGun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, "WeaponSocket");
+			SpawnedGun->SetOwner(this);
+		}
+		else
+		{
+			HideGun(i);
+		}
+	}
 }
 
 bool AShooterCharacter::IsDead() const
@@ -145,4 +155,14 @@ void AShooterCharacter::ShootGun(const FInputActionValue& Value)
 AGunActor * AShooterCharacter::GetActiveGun()
 {
 	return GunArray[GunActiveIndex];
+}
+
+void AShooterCharacter::HideGun(int32 HiddenGunIndex)
+{
+	GunArray[HiddenGunIndex]->SetActorHiddenInGame(true);
+}
+
+void AShooterCharacter::ShowGun(int32 ShownGunIndex)
+{
+	GunArray[ShownGunIndex]->SetActorHiddenInGame(false);
 }
